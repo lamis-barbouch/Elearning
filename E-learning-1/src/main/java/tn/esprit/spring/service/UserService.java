@@ -1,6 +1,7 @@
 package tn.esprit.spring.service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class UserService {
 	
 	
 	public User registerNewUser(User user) {
-	     
-        return userDao.save(user);
+	
+		return userDao.save(user);
     }
 	
 	public void initRolesAndUser(){
@@ -42,6 +43,17 @@ public class UserService {
 		formateurRole.setRoleNom("Formateur");
 		formateurRole.setRoleDescription("Formateur role");
 		roleDao.save(formateurRole);
+		
+		Role apprenantRole=new Role(); 
+		apprenantRole.setRoleId(3);
+		apprenantRole.setRoleNom("Apprenant");
+		apprenantRole.setRoleDescription("Apprenant Role");
+		roleDao.save(apprenantRole);
+		
+		
+		Set<Role>apprenantRoles=new HashSet<>();
+		apprenantRoles.add(apprenantRole);
+		
 		
 		User adminUser=new User();
 		adminUser.setCinUser(06425646);

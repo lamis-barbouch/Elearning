@@ -1,5 +1,8 @@
 package tn.esprit.spring.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import tn.esprit.spring.dao.ConfirmationTokenRepository;
+import tn.esprit.spring.dao.RoleDao;
 import tn.esprit.spring.dao.UserRepository;
 import tn.esprit.spring.entity.ConfirmationToken;
+import tn.esprit.spring.entity.Role;
 import tn.esprit.spring.entity.User;
 import tn.esprit.spring.service.EmailSenderService;
 import tn.esprit.spring.service.UserService;
@@ -40,6 +45,9 @@ public class UserController {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RoleDao roleDao;
 	
 	@PostConstruct
 	public void initRolesAndUser(){
@@ -71,12 +79,18 @@ public class UserController {
 	@PostMapping({"/register1"})
 	public User registerUser(@RequestBody User user) {
 		
+		Set<Role>apprenantRoles=new HashSet<>();
+		user.setRole(apprenantRoles);
+		
+		Set<Role> role=roleDao.findByRoleId(3);
+		user.setRole(role);
 		User existingUser = userRepository.findByEmailUserIgnoreCase(user.getEmailUser());
 		if(existingUser != null) {
 			
 		} else {
 			//user.setPasswordUser(encoder.encode(user.getPasswordUser()));
 			user.setPasswordUser(getEncodedPassword(user.getPasswordUser()));
+			
 			userRepository.save(user);
 			
 			ConfirmationToken confirmationToken = new ConfirmationToken(user);
