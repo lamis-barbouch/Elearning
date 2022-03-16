@@ -1,5 +1,6 @@
 package tn.esprit.spring.entity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,13 +26,25 @@ public class User {
 	private String nomUser;
 	private String prenomUser;
 	private String emailUser;
+	private int f;
 	
+	public int getF() {
+		return f;
+	}
+	public void setF(int f) {
+		this.f = f;
+	}
 	@Column(name="password")
 	private String passwordUser;
 	private String niveauEtudeApprenant;
 	private String telephoneUser;
 	private String specialitFormateur;
 	private boolean enabled;
+	
+	
+	@ManyToMany(mappedBy="listUsers")
+	private List<Formation> listformation;
+	
 	
 	@Column(name="is_enabled")
 	private int isEnabled;
