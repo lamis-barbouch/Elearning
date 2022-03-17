@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.spring.entity.Formation;
+import tn.esprit.spring.entity.User;
 import tn.esprit.spring.service.formationService;
 
 
@@ -36,17 +37,17 @@ public class formationController {
 		return formationservice.listeFormations();
 		}
 	
-	@PutMapping(value="/updateFormation")
+	@PutMapping(value="/updateFormation/{id}")//success
 	@ResponseBody
-	public void updateformation(@RequestBody Formation formation){
-		formationservice.updateformation(formation);
+	public Formation updateformation(@PathVariable("id")int id,@RequestBody Formation formation){
+		return formationservice.updateformation(id,formation);
 	}
 	
-	@DeleteMapping("/deleteFormation/{id}")
+	@DeleteMapping("/deleteFormation/{id}")//success
 	@ResponseBody
 	public void deleteformation(@PathVariable("id") int id) {formationservice.deleteformation(id);}
 	
-	@GetMapping("/findbyIdFormation/{id}")
+	@GetMapping("/findbyIdFormation/{id}")//succes
 	@ResponseBody
 	public Formation findbyId (@PathVariable("id")int id){ 
 		return formationservice.findbyId(id);
@@ -67,7 +68,7 @@ public class formationController {
 		return formationservice.filterformation(prixFormation);
 	}
 	
-	@GetMapping("/upcomingFormations")
+	@GetMapping("/upcomingFormations") //success
 	@ResponseBody
 	public List<Formation> upcomingFormations(){
 	return formationservice.upcomingFormations();
@@ -93,11 +94,19 @@ public class formationController {
 		formationservice.participerFormation(idApprenant, idFormation);
 	}
 	
-	//public List<String> participationsList(int idFormation);
-	//public List<String> FormationsParticipatedList(int idApprenant);
-	
-	
-	
+
+	@GetMapping("/participationsList/{idFormation}") 
+	@ResponseBody
+	public List<User> participationsList(@PathVariable("idFormation")int idFormation){
+		return formationservice.participationsList(idFormation);
+	}
+
+	@GetMapping("/formationListForUser/{idApprenant}") 
+	@ResponseBody
+	public List<Formation> FormationsParticipatedList(@PathVariable("idApprenant") int idApprenant){
+		return formationservice.FormationsParticipatedList(idApprenant);
+		
+	}
 	
 	
 	

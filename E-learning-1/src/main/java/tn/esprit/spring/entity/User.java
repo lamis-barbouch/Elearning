@@ -38,6 +38,12 @@ public class User {
 	private String passwordUser;
 	private String niveauEtudeApprenant;
 	private String telephoneUser;
+	public List<Formation> getListformation() {
+		return listformation;
+	}
+	public void setListformation(List<Formation> listformation) {
+		this.listformation = listformation;
+	}
 	private String specialitFormateur;
 	private boolean enabled;
 	
@@ -139,7 +145,6 @@ public class User {
 	}
 	
 	
-
 
 	
 }

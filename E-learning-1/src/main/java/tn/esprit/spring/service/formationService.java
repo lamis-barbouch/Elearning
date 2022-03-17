@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import tn.esprit.spring.dao.UserDao;
 import tn.esprit.spring.dao.formationRepository;
 import tn.esprit.spring.entity.Formation;
+import tn.esprit.spring.entity.SmsRequest;
 import tn.esprit.spring.entity.User;
 
 @Service
@@ -21,6 +22,9 @@ public class formationService implements IFormationService {
 	@Autowired
 	UserDao userrep;
 	
+	@Autowired 
+	SmsService smsService;
+	
 	@Override
 	public void addFormation(Formation formation) {
 		formationrep.save(formation);
@@ -30,12 +34,19 @@ public class formationService implements IFormationService {
 	@Override
 	public List<Formation> listeFormations() {
 		List<Formation> listeFormations=(List<Formation>) formationrep.findAll();
-		return null;
+		return listeFormations;
 	}
 
 	@Override
-	public void updateformation(Formation formation) {
-		formationrep.save(formation);
+	public Formation updateformation(int id,Formation formation) {
+		 Formation f=formationrep.findById(id).get();
+		 f.setDateFormation(formation.getDateFormation());
+		 f.setDescriptionFormation(formation.getDescriptionFormation());
+		 f.setNbDePlace(formation.getNbDePlace());
+		 f.setPrixFormation(formation.getPrixFormation());
+		 f.setTitreFormation(formation.getTitreFormation());
+		 
+		 return formationrep.save(f);
 	}
 
 	@Override
@@ -122,6 +133,13 @@ public class formationService implements IFormationService {
 				int nv_nbreDePlace=f.getNbDePlace()-1;
 				f.setNbDePlace(nv_nbreDePlace);
 				formationrep.save(f);
+				
+				String msg="Bonjour Mr/Mme "+"  "+u.getNomUser()+" "+u.getPrenomUser()+" Vous avez participé au formation intitulé "+
+						f.getTitreFormation()+"  "
+						+" qui aura lieu "+f.getDateFormation()+"." +"Merci d'etre à l'heure" +" --- MEDIANET---- ";
+						SmsRequest smsRequest = new SmsRequest ("+21656628701",msg);
+						//send a mail sms to the client 
+						smsService.sendSms(smsRequest );
 		}
 		else 
 		{System.out.println("The event is closed.thank you ");}
@@ -133,16 +151,47 @@ public class formationService implements IFormationService {
 		return list;
 	}
 
+	/*
 	@Override
 	public List<String> participationsList(int idFormation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Formation f=formationrep.findById(idFormation).orElse(null);
+		List<User> listUser=new ArrayList<User>();
+		listUser=f.getListUsers();
+		List<String> lnoms=new ArrayList<String>();
+		for(User u:listUser)
+		{
+			lnoms.add("Nom et prénom: "+u.getNomUser()+" "+u.getPrenomUser());
+		}
+		
+		return lnoms;
+		}
+		*/
+
+		
+	@Override
+	public List<User> participationsList(int idFormation) {
+		Formation f=formationrep.findById(idFormation).orElse(null);
+		List<User> listUser=new ArrayList<User>();
+		listUser=f.getListUsers();
+		List<User> listapprenant=new ArrayList<User>();
+		for(User u:listUser)
+		{
+			if (u.getF()!=1){
+				listapprenant.add(u);
+			}
+		}
+		return listapprenant;
+		}
+		
+		
+	
 
 	@Override
-	public List<String> FormationsParticipatedList(int idApprenant) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Formation> FormationsParticipatedList(int idApprenant) {
+		User u=userrep.findById(idApprenant).orElse(null);
+		List<Formation> listformation=new ArrayList<Formation>();
+		listformation=u.getListformation();
+		return listformation;
 	}
 
 }
