@@ -1,5 +1,7 @@
 package tn.esprit.spring.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,9 +9,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tn.esprit.spring.dao.NotificationRepository;
 import tn.esprit.spring.dao.UserDao;
 import tn.esprit.spring.dao.formationRepository;
 import tn.esprit.spring.entity.Formation;
+import tn.esprit.spring.entity.Notification;
 import tn.esprit.spring.entity.SmsRequest;
 import tn.esprit.spring.entity.User;
 
@@ -22,8 +26,16 @@ public class formationService implements IFormationService {
 	@Autowired
 	UserDao userrep;
 	
+	@Autowired
+	NotificationRepository notifrep;
+	
 	@Autowired 
 	SmsService smsService;
+	
+	@Autowired 
+	NotifService notifService;
+	
+	LocalDateTime localDate = LocalDateTime.now();
 	
 	@Override
 	public void addFormation(Formation formation) {
@@ -193,5 +205,30 @@ public class formationService implements IFormationService {
 		listformation=u.getListformation();
 		return listformation;
 	}
+
+	@Override
+	public void affecterFormateurAFormation(int idFormateur, int idFormation) {
+		
+		User u=userrep.findById(idFormateur).orElse(null);
+		Formation f=formationrep.findById(idFormation).orElse(null);
+		
+		f.getListUsers().add(u);
+		
+		
+		String descriptionNotif = "Vous avez une nouvelle formation à présenter intitulé "+f.getTitreFormation();
+		LocalDateTime localDate = LocalDateTime.now();
+		
+		Notification notification=new Notification(descriptionNotif,localDate);
+		
+		notification.getListUsers().add(u);
+		
+		notifrep.save(notification);
+		notifService.sendNotif(idFormateur,notification);
+		
+		
+		formationrep.save(f);
+		userrep.save(u);
+	}
+	
 
 }

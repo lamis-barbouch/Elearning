@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import tn.esprit.spring.entity.Formation;
+import tn.esprit.spring.entity.Notification;
 import tn.esprit.spring.entity.User;
+import tn.esprit.spring.service.NotifService;
 import tn.esprit.spring.service.formationService;
 
 
@@ -23,6 +25,8 @@ public class formationController {
 	@Autowired
 	formationService formationservice;
 	
+	@Autowired
+	NotifService notifservice;
 	
 	@PostMapping("/addFormation")//success
 	@ResponseBody
@@ -108,9 +112,27 @@ public class formationController {
 		
 	}
 	
+	@PostMapping(value="/affecterFormateurAFormation/{idFormateur}/{idFormation}") //success
+	@ResponseBody
+	public void affecterFormateurAFormation(@PathVariable("idFormateur")int idFormateur,@PathVariable("idFormation")int idFormation)
+	{
+		formationservice.affecterFormateurAFormation(idFormateur, idFormation);
+		
+	}
 	
 	
+
+	@GetMapping(value="/getAllNotif")//success
+	@ResponseBody
+	public List<Notification> getAllNotif(){
+		return notifservice.getAllNotif();
+		}
 	
+	@GetMapping(value="/getAllNotSeenNotif/{idFormateur}")//success
+	@ResponseBody
+	public List<Notification> getAllNotSeenNotif(@PathVariable("idFormateur")int idFormateur){
+		return notifservice.getAllNotSeenNotif(idFormateur);
+		}
 	
 	
 }

@@ -52,9 +52,19 @@ public class User {
 	private List<Formation> listformation;
 	
 	
+	@ManyToMany(mappedBy="listUsers")
+	private List<Notification> listNotification;
+	
+	
 	@Column(name="is_enabled")
 	private int isEnabled;
 	
+	public List<Notification> getListNotification() {
+		return listNotification;
+	}
+	public void setListNotification(List<Notification> listNotification) {
+		this.listNotification = listNotification;
+	}
 	@Column(updatable=false)
 	private String verificationCode;
 

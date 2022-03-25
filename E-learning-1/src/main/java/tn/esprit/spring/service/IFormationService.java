@@ -27,6 +27,7 @@ public interface IFormationService {
 
 	public List<Formation> FormationsParticipatedList(int idApprenant);
 	
+	public void affecterFormateurAFormation(int idFormateur, int idFormation); 
 	
 
 }

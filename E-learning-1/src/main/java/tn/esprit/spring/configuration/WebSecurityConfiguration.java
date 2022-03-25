@@ -42,7 +42,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors();
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/api/v1/sms","/authenticate", "/registerNewUser","/register1","/login","/formateurs","/confirm","/confirm-account**","/formateurs**","/formateurs/{cinUser}","/addFormation","/formationLists","/updateFormation/{id}","/deleteFormation/{id}","/findbyIdFormation/{id}","/findFormationByName/{titre}","/filterformation/{prixFormation}","/upcomingFormations","/displayBestFormationByParticipations","/participerFormation/{idApprenant}/{idFormation}","/passedFormations").permitAll()
+                .authorizeRequests().antMatchers("/api/v1/sms","/getAllNotSeenNotif/{idFormateur}","/authenticate","/getAllNotif", "/registerNewUser","/register1","/login","/formateurs","/confirm","/confirm-account**","/formateurs**","/formateurs/{cinUser}","/addFormation","/formationLists","/updateFormation/{id}","/deleteFormation/{id}","/findbyIdFormation/{id}","/findFormationByName/{titre}","/filterformation/{prixFormation}","/upcomingFormations","/displayBestFormationByParticipations","/participerFormation/{idApprenant}/{idFormation}","/passedFormations","/affecterFormateurAFormation/{idFormateur}/{idFormation}").permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()
                 .and()

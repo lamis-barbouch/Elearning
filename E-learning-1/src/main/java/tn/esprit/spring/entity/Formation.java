@@ -5,13 +5,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -27,8 +30,23 @@ public class Formation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int idFormation;
 	private String titreFormation;
+	
+	@Lob 
+	@Column(name="descriptionFormation", length=512)
 	private String descriptionFormation;
+	
+	@Lob 
+	@Column(name="descriptiondetailleFormation", length=512)
+	private String descriptiondetailleFormation;
+	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm")
 	private Date dateFormation;
+	public String getDescriptiondetailleFormation() {
+		return descriptiondetailleFormation;
+	}
+	public void setDescriptiondetailleFormation(String descriptiondetailleFormation) {
+		this.descriptiondetailleFormation = descriptiondetailleFormation;
+	}
 	private double prixFormation;
 	private int nbDePlace;
 	
