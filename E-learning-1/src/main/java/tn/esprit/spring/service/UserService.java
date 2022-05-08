@@ -26,10 +26,18 @@ public class UserService {
 	private PasswordEncoder passwordEncoder;
 	
 	
+	public User updateClient(int cinUser){
+		User client=userDao.findById(cinUser).orElse(null);
+		client.setAlerte(1);
+		return userDao.save(client);
+	}
+
+	
 	public User registerNewUser(User user) {
 	
 		return userDao.save(user);
     }
+	
 	
 	public void initRolesAndUser(){
 		Role adminRole=new Role(); 

@@ -23,11 +23,19 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int cinUser;
+	private  int alerte; 
 	private String nomUser;
 	private String prenomUser;
 	private String emailUser;
 	private int f;
 	
+	
+	public int getAlerte() {
+		return alerte;
+	}
+	public void setAlerte(int alerte) {
+		this.alerte = alerte;
+	}
 	public int getF() {
 		return f;
 	}

@@ -31,6 +31,7 @@ public class NotifService implements INotifService  {
 	public void seenNotif(int idNotif) {
 		Notification n=notifrep.findById(idNotif).get();
 		n.setSeen(1);
+		notifrep.save(n);
 	}
 
 	@Override
@@ -66,14 +67,17 @@ public class NotifService implements INotifService  {
 		User f=userrep.findById(idFormateur).orElse(null);
 		List<Notification> listNotif=new ArrayList<Notification>();
 		listNotif=f.getListNotification();
-		return listNotif;
+		List<Notification> listNonSeenNotif=new ArrayList<Notification>();
+		for(Notification n:listNotif)
+		{
+			if(n.getSeen()!=1){
+				listNonSeenNotif.add(n);
+			}
+		}
 		
 		
-				
-		
-		
-		
-		
+		return listNonSeenNotif;
+
 	}
 
 }

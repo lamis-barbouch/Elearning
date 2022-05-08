@@ -120,7 +120,12 @@ public class formationController {
 		
 	}
 	
-	
+	@GetMapping(value="/seenNotif/{idNotif}") //success
+	@ResponseBody
+	public void seenNotif(@PathVariable("idNotif")int idNotif) {
+		notifservice.seenNotif(idNotif);
+		
+	}
 
 	@GetMapping(value="/getAllNotif")//success
 	@ResponseBody
