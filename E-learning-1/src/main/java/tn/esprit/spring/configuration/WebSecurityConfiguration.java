@@ -58,6 +58,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 "/question/add/{quizId}",
 
                 		"/quiz/",
+                		"/quiz/add/{categoryId}",
                 		"/quiz/teacher-quizzes/{username}",
                 		"/quiz/delete/{quizId}",
                 		

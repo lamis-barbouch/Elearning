@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -74,10 +75,20 @@ public class QuizController {
     }
 
     /*--------------------------------------------------*/
-    @PostMapping("/")
+   /* @PostMapping("/")
+    @ResponseBody
     public void addQuiz(@RequestBody Quiz quiz) {
         quiz.setCode(this.generateQuizCode());
         quiz.setCategory(this.categoryService.getCategory(quiz.getCategory().getCategoryId()));
+        quizService.saveQuiz(quiz);
+    }
+*/
+    
+    @PostMapping("/add/{categoryId}")
+    @ResponseBody
+    public void addQuiz(@RequestBody Quiz quiz,@PathVariable(value="categoryId")long categoryId) {
+        quiz.setCode(this.generateQuizCode());
+        quiz.setCategory(this.categoryService.getCategory(categoryId));
         quizService.saveQuiz(quiz);
     }
 
@@ -239,10 +250,10 @@ public class QuizController {
 
     private Quiz getQuizDto(Quiz quiz) {
         Quiz quizDto = new Quiz();
-        BeanUtils.copyProperties(quiz, quizDto);
+       // BeanUtils.copyProperties(quiz, quizDto);
 
         Category categoryDto = new Category();
-        BeanUtils.copyProperties(quiz.getCategory(), categoryDto);
+      //  BeanUtils.copyProperties(quiz.getCategory(), categoryDto);
         quizDto.setCategory(categoryDto);
         return quizDto;
     }
@@ -251,10 +262,10 @@ public class QuizController {
         List<Quiz> quizDtoList = new ArrayList<>();
         for (Quiz quiz : quizList) {
             Quiz quizDto = new Quiz();
-            BeanUtils.copyProperties(quiz, quizDto);
+           // BeanUtils.copyProperties(quiz, quizDto);
 
             Category categoryDto = new Category();
-            BeanUtils.copyProperties(quiz.getCategory(), categoryDto);
+           // BeanUtils.copyProperties(quiz.getCategory(), categoryDto);
             quizDto.setCategory(categoryDto);
 
             quizDtoList.add(quizDto);
@@ -266,7 +277,7 @@ public class QuizController {
         Set<Question> questionDtoSet = new HashSet<>();
         for (Question question : quiz.getQuestionSet()) {
             Question questionDto = new Question();
-            BeanUtils.copyProperties(question, questionDto);
+          //  BeanUtils.copyProperties(question, questionDto);
             questionDtoSet.add(questionDto);
         }
         return questionDtoSet;
@@ -274,7 +285,7 @@ public class QuizController {
 
     private ExamQuiz getExamQuizDto(Quiz quiz) {
         ExamQuiz examQuizDto = new ExamQuiz();
-        BeanUtils.copyProperties(quiz, examQuizDto);
+        //BeanUtils.copyProperties(quiz, examQuizDto);
 
         /*--Remove Question Answer & Convert it To Shuffle Questions--*/
         Set<Question> questionDtoSet = this.getQuizQuestionDtoSet(quiz);
@@ -299,12 +310,12 @@ public class QuizController {
 
     private SubmitQuiz getSubmitQuiz(SubmitQuiz submitQuizDto) {
         SubmitQuiz submitQuiz = new SubmitQuiz();
-        BeanUtils.copyProperties(submitQuizDto, submitQuiz);
+       // BeanUtils.copyProperties(submitQuizDto, submitQuiz);
 
         List<SubmitQuestion> submitQuestionList = new ArrayList<>();
         for (SubmitQuestion submitQuestionDto : submitQuizDto.getSubmitQuestionList()) {
             SubmitQuestion submitQuestion = new SubmitQuestion();
-            BeanUtils.copyProperties(submitQuestionDto, submitQuestion);
+          //  BeanUtils.copyProperties(submitQuestionDto, submitQuestion);
             submitQuestionList.add(submitQuestion);
         }
         submitQuiz.setSubmitQuestionList(submitQuestionList);
@@ -313,11 +324,11 @@ public class QuizController {
 
     private SubmitQuiz getSubmitQuizDto(SubmitQuiz submitQuiz) {
         SubmitQuiz submitQuizDto = new SubmitQuiz();
-        BeanUtils.copyProperties(submitQuiz, submitQuizDto);
+       // BeanUtils.copyProperties(submitQuiz, submitQuizDto);
         List<SubmitQuestion> submitQuestionDtoList = new ArrayList<>();
         for (SubmitQuestion submitQuestion : submitQuiz.getSubmitQuestionList()) {
             SubmitQuestion submitQuestionDto = new SubmitQuestion();
-            BeanUtils.copyProperties(submitQuestion, submitQuestionDto);
+         //   BeanUtils.copyProperties(submitQuestion, submitQuestionDto);
             submitQuestionDtoList.add(submitQuestionDto);
         }
         submitQuizDto.setSubmitQuestionList(submitQuestionDtoList);
