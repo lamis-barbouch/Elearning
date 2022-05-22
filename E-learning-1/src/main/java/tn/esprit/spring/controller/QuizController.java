@@ -19,6 +19,7 @@ import java.util.UUID;
 import javax.mail.MessagingException;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,6 +47,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import tn.esprit.spring.dao.QuizRepo;
+import tn.esprit.spring.dao.formationRepository;
 import tn.esprit.spring.entity.Category;
 import tn.esprit.spring.entity.ExamQuiz;
 import tn.esprit.spring.entity.Question;
@@ -62,17 +65,21 @@ import tn.esprit.spring.service.UserService;
 @CrossOrigin
 @RequestMapping("/quiz")
 public class QuizController {
+	
+	 @Autowired
     UserService userService;
+	 @Autowired
     QuizService quizService;
+	 
+	 @Autowired
     CategoryService categoryService;
+	 
+	 @Autowired
      QuestionService questionService;
+     @Autowired
+  	QuizRepo quizrep;
 
-    public QuizController(UserService userService, QuizService quizService, CategoryService categoryService, QuestionService questionService) {
-        this.userService = userService;
-        this.quizService = quizService;
-        this.categoryService = categoryService;
-        this.questionService = questionService;
-    }
+
 
     /*--------------------------------------------------*/
    /* @PostMapping("/")
@@ -92,11 +99,20 @@ public class QuizController {
         quizService.saveQuiz(quiz);
     }
 
+   
     @GetMapping("/teacher-quizzes/{username}")
+    public List<Quiz> getTeacherAllQuizzes(@PathVariable("username") String username) {
+        List<Quiz> quizList = quizService.getQuizByUsername(username);
+        return quizList;
+    }
+    
+    
+    /*@GetMapping("/teacher-quizzes/{username}")
     public ResponseEntity<?> getTeacherAllQuizzes(@PathVariable("username") String username) {
         List<Quiz> quizList = quizService.getQuizByUsername(username);
         return ResponseEntity.ok(getQuizDtoList(quizList));
     }
+    */
 
     @DeleteMapping("/delete/{quizId}")
     public ResponseEntity<?> deleteQuiz(@PathVariable("quizId") Long quizId) {
@@ -136,23 +152,31 @@ public class QuizController {
         this.quizService.saveQuiz(quiz);
         return ResponseEntity.ok(new ResponseDto("Set Schedule"));
     }
-
+    
     @GetMapping("/questions/{quizId}")
+    public Set<Question> getAllQuestionsOfQuiz(@PathVariable("quizId") Long quizId) {
+        Quiz quiz = this.quizService.getQuiz(quizId);
+        return quiz.getQuestionSet();
+    }
+
+    /*
+     * @GetMapping("/questions/{quizId}")
     public ResponseEntity<?> getAllQuestionsOfQuiz(@PathVariable("quizId") Long quizId) {
         Quiz quiz = this.quizService.getQuiz(quizId);
         return ResponseEntity.ok(getQuizQuestionDtoSet(quiz));
     }
+    */
 
     @GetMapping("/active-quizzes")
-    public ResponseEntity<?> getAllActiveQuizzes() {
+    public List<Quiz> getAllActiveQuizzes() {
         List<Quiz> quizList = quizService.getAllActiveQuizzes();
-        return ResponseEntity.ok(getQuizDtoList(quizList));
+        return  quizList;
     }
 
     @GetMapping("/get-quiz/{quizId}")
-    public ResponseEntity<?> getQuizInformation(@PathVariable("quizId") Long quizId) {
+    public Quiz getQuizInformation(@PathVariable("quizId") Long quizId) {
         Quiz quiz = quizService.getQuiz(quizId);
-        return ResponseEntity.ok(getQuizDto(quiz));
+        return quiz;
     }
 
     @GetMapping("/find-quiz/{code}")
@@ -167,7 +191,7 @@ public class QuizController {
     }
 
     @GetMapping("/start/{quizId}")
-    public ResponseEntity<?> getQuizQuestionsForExam(@PathVariable("quizId") Long quizId) throws ParseException {
+    public Quiz getQuizQuestionsForExam(@PathVariable("quizId") Long quizId) throws ParseException {
         Quiz quiz = this.quizService.getQuiz(quizId);
         ExamQuiz examQuizDto = getExamQuizDto(quiz);
 
@@ -186,26 +210,28 @@ public class QuizController {
 
         }
 
-        return ResponseEntity.ok(examQuizDto);
+        return quiz;
     }
 
     @PostMapping("/submit/{username}")
-    public ResponseEntity<?> submitQuizExam(@PathVariable("username") String username, @RequestBody SubmitQuiz submitQuizDto) throws MessagingException, TemplateException, IOException {
+    public SubmitQuiz submitQuizExam(@PathVariable("username") String username, @RequestBody SubmitQuiz submitQuizDto) throws MessagingException, TemplateException, IOException {
         SubmitQuiz submitQuiz = this.getSubmitQuiz(submitQuizDto);
         List<SubmitQuestion> submitQuestionList = this.questionService.saveSubmitQuestionList(submitQuiz.getSubmitQuestionList());
         submitQuiz.setSubmitQuestionList(submitQuestionList);
         submitQuiz.setUsername(username);
         SubmitQuiz savedSubmitQuiz = this.quizService.submitQuiz(submitQuiz);
 
-        return ResponseEntity.ok(this.getSubmitQuizDto(savedSubmitQuiz));
+        return savedSubmitQuiz;
     }
 
    
 
     @GetMapping("/result/{submitQuizId}")
-    public ResponseEntity<?> getQuizExamResult(@PathVariable("submitQuizId") Long submitQuizId) {
-        return ResponseEntity.ok(this.getSubmitQuizDto(this.quizService.getSubmitQuiz(submitQuizId)));
+    public SubmitQuiz getQuizExamResult(@PathVariable("submitQuizId") Long submitQuizId) {
+    	SubmitQuiz savedSubmitQuiz=this.getSubmitQuizDto(this.quizService.getSubmitQuiz(submitQuizId));
+        return savedSubmitQuiz;
     }
+    
 
     @GetMapping("/quiz-participant-result/{quizId}")
     public ResponseEntity<?> getQuizParticipantsResult(@PathVariable("quizId") Long quizId) {
@@ -272,18 +298,32 @@ public class QuizController {
         }
         return quizDtoList;
     }
+    
+ 
+    
+    
+    
+   
 
-    private Set<Question> getQuizQuestionDtoSet(Quiz quiz) {
+   private Set<Question> getQuizQuestionDtoSet(Quiz quiz) {
         Set<Question> questionDtoSet = new HashSet<>();
         for (Question question : quiz.getQuestionSet()) {
-            Question questionDto = new Question();
+        	
+           Question questionDto = new Question();
+           questionDto.getQuestionId();
+           questionDto.getContent();
+           questionDto.getOption1();
+           questionDto.getOption2();
+           questionDto.getOption3();
+           questionDto.getOption4();
+           questionDto.getAnswer();
           //  BeanUtils.copyProperties(question, questionDto);
-            questionDtoSet.add(questionDto);
-        }
-        return questionDtoSet;
-    }
+             questionDtoSet.add(questionDto);
+         }
+         return questionDtoSet;
+     }
 
-    private ExamQuiz getExamQuizDto(Quiz quiz) {
+   public ExamQuiz getExamQuizDto(Quiz quiz) {
         ExamQuiz examQuizDto = new ExamQuiz();
         //BeanUtils.copyProperties(quiz, examQuizDto);
 

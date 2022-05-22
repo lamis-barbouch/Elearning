@@ -2,6 +2,7 @@ package tn.esprit.spring.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import tn.esprit.spring.dao.QuizRepo;
@@ -14,13 +15,12 @@ import tn.esprit.spring.entity.SubmitQuiz;
 
 @Service
 public class QuizService {
-    private final QuizRepo quizRepo;
-    private final SubmitQuizRepo submitQuizRepo;
+	
+	@Autowired
+     QuizRepo quizRepo;
+	@Autowired
+	SubmitQuizRepo submitQuizRepo;
 
-    public QuizService(QuizRepo quizRepo, SubmitQuizRepo submitQuizRepo) {
-        this.quizRepo = quizRepo;
-        this.submitQuizRepo = submitQuizRepo;
-    }
 
     /*------------------------------------------------------*/
 

@@ -1,26 +1,66 @@
 package tn.esprit.spring.controller;
 
+import static java.lang.String.format;
+
+import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 import tn.esprit.spring.entity.ChatMessage;
+import tn.esprit.spring.entity.Message;
 
 @Controller
 public class ChatController {
 	
-	@MessageMapping("/chat.register")
-    @SendTo("/topic/public")
-	public ChatMessage register(@Payload ChatMessage chatMessage,SimpMessageHeaderAccessor  headerAccessor){
-		headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-		return chatMessage;
+	 private static final String MESSAGE_FORMAT = "/chat-room/%s";
+
+	    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
+
+	    @Autowired
+	    private SimpMessageSendingOperations messagingTemplate;
+
+	    
+	    @MessageMapping("/chat/{roomId}/sendMessage")
+	    public void sendMessage(@DestinationVariable String roomId, @Payload Message chatMessage) {
+	        LocalDateTime time = LocalDateTime.now();
+	        chatMessage.setTime(time);
+	        messagingTemplate.convertAndSend(format(MESSAGE_FORMAT, roomId), chatMessage);
+	    }
+
+	    @MessageMapping("/chat/{roomId}/addUser")
+	    public void addUser(@DestinationVariable String roomId, @Payload Message chatMessage) {
+	        chatMessage.setType(Message.MessageType.JOIN);
+	        String message = chatMessage.getSender() + " joined";
+	        chatMessage.setContent(message);
+	        log.info(message);
+	        messagingTemplate.convertAndSend(format(MESSAGE_FORMAT, roomId), chatMessage);
+	    }
+
+	    @MessageMapping("/chat/{roomId}/leaveUser")
+	    public void leaveUser(@DestinationVariable String roomId, @Payload Message chatMessage) {
+	        chatMessage.setType(Message.MessageType.LEAVE);
+	        String message = chatMessage.getSender() + " left";
+	        chatMessage.setContent(message);
+	        log.info(message);
+	        messagingTemplate.convertAndSend(format(MESSAGE_FORMAT, roomId), chatMessage);
+	    }
+
+	    @MessageMapping("/chat/{roomId}/raiseHand")
+	    public void raiseHand(@DestinationVariable String roomId, @Payload Message chatMessage) {
+	        chatMessage.setType(Message.MessageType.RAISE_HAND);
+	        String message = chatMessage.getSender() + " raised Hand";
+	        chatMessage.setContent(message);
+	        log.info(message);
+	        messagingTemplate.convertAndSend(format(MESSAGE_FORMAT, roomId), chatMessage);
+	    }
+
 	}
-	
-	@MessageMapping("/chat.send")
-    @SendTo("/topic/public")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        return chatMessage;
-    }
-}

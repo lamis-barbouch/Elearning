@@ -41,11 +41,26 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+    	httpSecurity.headers().frameOptions().disable();
         httpSecurity.cors();
         httpSecurity.csrf().disable()
-                .authorizeRequests().antMatchers("/category/all-category",
+                .authorizeRequests().antMatchers(
+                		"/**",
+"/category/all-category","/chat/{roomId}/sendMessage","/chat/{roomId}/addUser",
+"/sock","js/mychat.js",
+"/chat/{roomId}/leaveUser",
+"/chat/{roomId}/raiseHand","/chat","/topic/public","/app/chat.send",
+"/viewAllSubject" ,"/addSubject"
+,"/updateSubject","/deleteSubject/{id}",
+"/autodeleteSubject","/findByIdSubject/{id}",
+"/findbytitleSubject/{title}","/displayBestSubjectsByComments",
+"/displayBestSubjectByrating",
+"/addComment","/deleteComment/{id}","/commentLists","/filtreBadWords/{id_comment}","/chat-app/chat/${newRoomId}",
 
-"/category/",
+"/category/","/affecterRatingASubject/{id_rating}/{id_subject}"
+,"/commentairesList/{id_subject}",
+
+"/affecterCommentASubject/{id}/{id_subject}",
 
 "/category/{categoryId}",
 "/category/update",
@@ -62,7 +77,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 		"/quiz/teacher-quizzes/{username}",
                 		"/quiz/delete/{quizId}",
                 		
-
+"http://127.0.0.1:8084/sock",
+"/chat-app/chat/${newRoomId}",
+"/chat-room/${roomId}",
+"${topic}/addUser",
+"/chat-app/chat/${newRoomId}",
+"${topic}/sendMessage",
+"/?",
+"/topic/public",
+"/app/chat.register",
+"/app/chat.send",
+"/chat-room","/chat-app","/sock",
                 		"/quiz/update-type",
                 		"/quiz/update-visibility",
                 		"/quiz/disable-quiz/{quizId}",
@@ -77,7 +102,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 		"/quiz/get-quiz/{quizId}",
                 		"/quiz/quiz-participant-result/{quizId}",
                 		"/quiz/quiz-participant-result-pdf/{quizId}",
-"/category/*","/question/*","/quiz/*"
+"/category/*","/question/*","/quiz/*","/js/mychat.js"," http://localhost:8084/sock/*","http://localhost:8084/sock/**","http://localhost:8084/sock/?","http://localhost:8084/sock**"
                 		,"/file/files","/files","/upload","/download","/api/v1/sms","/getAllNotSeenNotif/{idFormateur}","/seenNotif/{idNotif}","/authenticate","/getAllNotif", "/registerNewUser","/register1","/login","/formateurs","/confirm","/confirm-account**","/formateurs**","/formateurs/{cinUser}","/addFormation","/formationLists","/updateFormation/{id}","/deleteFormation/{id}","/findbyIdFormation/{id}","/findFormationByName/{titre}","/filterformation/{prixFormation}","/upcomingFormations","/displayBestFormationByParticipations","/participerFormation/{idApprenant}/{idFormation}","/passedFormations","/affecterFormateurAFormation/{idFormateur}/{idFormation}","/","/?","/chat","/app","/topic","/chat.register","/topic/public","/chat.send","/topic/public","/css/main.css","/js/main.js","18.jpg","/chat**","/chat/**","/file/download/**","/file/download/*","/*","chat/info/*","/file/upload","/file/download","/file/download/{filename}","download/{filename}").permitAll()
                 .antMatchers(HttpHeaders.ALLOW).permitAll()
                 .anyRequest().authenticated()

@@ -14,7 +14,9 @@ import javax.persistence.ManyToOne;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 @Entity
 public class Question implements Serializable{
 
@@ -30,7 +32,7 @@ public class Question implements Serializable{
     private String option4;
     private String answer;
 
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "quiz_question",
             joinColumns = @JoinColumn(name = "question_id"),
@@ -119,6 +121,26 @@ public class Question implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
+
+	public Question(long questionId, String content, String option1, String option2, String option3, String option4,
+			String answer) {
+		super();
+		this.questionId = questionId;
+		this.content = content;
+		this.option1 = option1;
+		this.option2 = option2;
+		this.option3 = option3;
+		this.option4 = option4;
+		this.answer = answer;
+	}
+
+	@Override
+	public String toString() {
+		return "Question [questionId=" + questionId + ", content=" + content + ", option1=" + option1 + ", option2="
+				+ option2 + ", option3=" + option3 + ", option4=" + option4 + ", answer=" + answer + ", quiz=" + quiz
+				+ "]";
+	}
+	
     
     
 }

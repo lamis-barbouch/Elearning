@@ -13,7 +13,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 @Entity
 public class SubmitQuiz implements Serializable{
 	
@@ -26,6 +28,9 @@ public class SubmitQuiz implements Serializable{
 	    private double maxMarks;
 	    private int totalCorrectAnswer;
 	    private String username;
+	    
+	    
+	    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	    @JsonIgnore
 	    @OneToMany(fetch = FetchType.LAZY)
 	    @JoinTable(name = "submit_quiz_question",

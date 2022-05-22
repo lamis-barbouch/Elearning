@@ -17,9 +17,16 @@ import javax.persistence.OneToMany;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 @Entity
 public class Quiz implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,14 +47,15 @@ public class Quiz implements Serializable {
     private String endTime;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
     @JoinTable(name = "category_quiz",
             joinColumns = @JoinColumn(name = "quiz_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Category category;
 
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
     @OneToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinTable(name = "quiz_question",
             joinColumns = @JoinColumn(name = "quiz_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id"))
@@ -158,6 +166,7 @@ public class Quiz implements Serializable {
 	}
 
 	public Set<Question> getQuestionSet() {
+		
 		return questionSet;
 	}
 

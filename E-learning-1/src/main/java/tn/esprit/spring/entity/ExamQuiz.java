@@ -12,8 +12,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 @Entity
 public class ExamQuiz {
 	@Id
@@ -25,6 +26,7 @@ public class ExamQuiz {
     private long quizTime;
     private long remainingTime;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY)
     private List<Question> questionDtoList;
