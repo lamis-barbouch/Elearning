@@ -45,7 +45,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity.cors();
         httpSecurity.csrf().disable()
                 .authorizeRequests().antMatchers(
-                		"/**",
+                		"/**","/addReclam","/reclamsLists","/repondreclam/{id}",
 "/category/all-category","/chat/{roomId}/sendMessage","/chat/{roomId}/addUser",
 "/sock","js/mychat.js",
 "/chat/{roomId}/leaveUser",
