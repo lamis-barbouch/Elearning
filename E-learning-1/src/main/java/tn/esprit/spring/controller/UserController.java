@@ -88,8 +88,8 @@ public class UserController {
 		if(existingUser != null) {
 			
 		} else {
-			//user.setPasswordUser(encoder.encode(user.getPasswordUser()));
-			user.setPasswordUser(getEncodedPassword(user.getPasswordUser()));
+			user.setPasswordUser(encoder.encode(user.getPasswordUser()));
+			//user.setPasswordUser(getEncodedPassword(user.getPasswordUser()));
 			
 			userRepository.save(user);
 			

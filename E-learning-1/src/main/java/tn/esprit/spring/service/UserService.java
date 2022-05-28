@@ -59,9 +59,7 @@ public class UserService {
 		roleDao.save(apprenantRole);
 		
 		
-		Set<Role>apprenantRoles=new HashSet<>();
-		apprenantRoles.add(apprenantRole);
-		
+	
 		
 		User adminUser=new User();
 		adminUser.setCinUser(06425646);
@@ -77,16 +75,28 @@ public class UserService {
 
 		User formateur=new User();
 		formateur.setCinUser(1223321);
-		formateur.setEmailUser("lamis@gmail.com");
-		formateur.setNomUser("lamis");
+		formateur.setEmailUser("formateur@gmail.com");
+		formateur.setNomUser("formateur");
 		formateur.setPrenomUser("formateur");
-		formateur.setPasswordUser(getEncodedPassword("formateur"));
+		formateur.setPasswordUser(getEncodedPassword("admin"));
 		
 		Set<Role>formateurRoles=new HashSet<>();
 		formateurRoles.add(formateurRole);
 		formateur.setRole(formateurRoles);
 		userDao.save(formateur);
 		
+		
+		User apprenantUser=new User();
+		apprenantUser.setCinUser(02101221);
+		apprenantUser.setEmailUser("lamis@gmail.com");
+		apprenantUser.setNomUser("lamis");
+		apprenantUser.setPrenomUser("lamis");
+		apprenantUser.setPasswordUser(getEncodedPassword("admin"));
+		
+		Set<Role> apprenantRoles=new HashSet<>();
+		apprenantRoles.add(apprenantRole);
+		apprenantUser.setRole(apprenantRoles);
+		userDao.save(apprenantUser);
 		
 	}
 	
